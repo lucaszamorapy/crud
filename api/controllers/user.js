@@ -2,11 +2,9 @@ import { db } from "../db.js";
 
 export const getUsers = (_, res) => {
   const q = `
-  SELECT employees.id, employees.name, employees.email, positions.position
+  SELECT employees.id, employees.name, employees.email, employees.dtNasc, employees.salario, positions.position
   FROM employees
-  INNER JOIN positions ON employees.position_id = positions.id
-  
-`;
+  INNER JOIN positions ON employees.position_id = positions.id`;
 
   db.query(q, (err, data) => {
     if (err) return res.json(err);
@@ -15,11 +13,18 @@ export const getUsers = (_, res) => {
 };
 
 export const addUser = (req, res) => {
-  const q = "INSERT INTO employees(`name`, `email`, `position_id`) VALUES(?)";
+  const q =
+    "INSERT INTO employees(`name`, `email`, `position_id`, `dtNasc`, `salario` ) VALUES(?, ?, ?, ?, CONCAT('R$ ', ?))";
 
-  const values = [req.body.name, req.body.email, req.body.position_id];
+  const values = [
+    req.body.name,
+    req.body.email,
+    req.body.position_id,
+    req.body.dtNasc,
+    req.body.salario,
+  ];
 
-  db.query(q, [values], (err) => {
+  db.query(q, values, (err) => {
     if (err) return res.json(err);
     return res.status(200).json("Funcionário cadastrado.");
   });
@@ -27,11 +32,18 @@ export const addUser = (req, res) => {
 
 export const updateUser = (req, res) => {
   const q =
-    "UPDATE employees SET `name` = ?, `email` = ?, `position_id` = ? WHERE `id` = ?";
+    "UPDATE employees SET `name` = ?, `email` = ?, `position_id` = ?, `dtNasc` = ?, `salario` = CONCAT('R$ ', ?) WHERE `id` = ?";
 
-  const values = [req.body.name, req.body.email, req.body.position_id];
+  const values = [
+    req.body.name,
+    req.body.email,
+    req.body.position_id,
+    req.body.dtNasc,
+    req.body.salario,
+    req.params.id,
+  ];
 
-  db.query(q, [...values, req.params.id], (err) => {
+  db.query(q, values, (err) => {
     if (err) return res.json(err);
     return res.status(200).json("Funcionário atualizado.");
   });
