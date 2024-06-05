@@ -17,7 +17,7 @@ export const getUsers = (_, res) => {
 export const addUser = (req, res) => {
   const q = "INSERT INTO employees(`name`, `email`, `position_id`) VALUES(?)";
 
-  const values = [req.body.nome, req.body.email, req.body.position_id];
+  const values = [req.body.name, req.body.email, req.body.position_id];
 
   db.query(q, [values], (err) => {
     if (err) return res.json(err);
@@ -29,7 +29,7 @@ export const updateUser = (req, res) => {
   const q =
     "UPDATE employees SET `name` = ?, `email` = ?, `position_id` = ? WHERE `id` = ?";
 
-  const values = [req.body.nome, req.body.email, req.body.position_id];
+  const values = [req.body.name, req.body.email, req.body.position_id];
 
   db.query(q, [...values, req.params.id], (err) => {
     if (err) return res.json(err);
