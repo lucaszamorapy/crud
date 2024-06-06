@@ -18,7 +18,7 @@ export const searchUsers = (req, res) => {
     SELECT employees.id, employees.name, employees.email, employees.dtNasc, employees.salario, positions.position
     FROM employees
     INNER JOIN positions ON employees.position_id = positions.id
-    WHERE employees.name LIKE ? OR employees.email LIKE ?
+    WHERE employees.name LIKE ? OR employees.dtNasc LIKE ?
   `;
 
   const values = [`%${searchTerm}%`, `%${searchTerm}%`];
@@ -31,7 +31,7 @@ export const searchUsers = (req, res) => {
 
 export const addUser = (req, res) => {
   const q =
-    "INSERT INTO employees(`name`, `email`, `position_id`, `dtNasc`, `salario` ) VALUES(?, ?, ?, ?, CONCAT('R$ ', ?))";
+    "INSERT INTO employees(`name`, `email`, `position_id`, `dtNasc`, `salario` ) VALUES(?, ?, ?, ?, ?)";
 
   const values = [
     req.body.name,
@@ -49,7 +49,7 @@ export const addUser = (req, res) => {
 
 export const updateUser = (req, res) => {
   const q =
-    "UPDATE employees SET `name` = ?, `email` = ?, `position_id` = ?, `dtNasc` = ?, `salario` = CONCAT('R$ ', ?) WHERE `id` = ?";
+    "UPDATE employees SET `name` = ?, `email` = ?, `position_id` = ?, `dtNasc` = ?, `salario` = ? WHERE `id` = ?";
 
   const values = [
     req.body.name,
