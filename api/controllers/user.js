@@ -12,6 +12,23 @@ export const getUsers = (_, res) => {
   });
 };
 
+export const searchUsers = (req, res) => {
+  const searchTerm = req.query.searchTerm;
+  const q = `
+    SELECT employees.id, employees.name, employees.email, employees.dtNasc, employees.salario, positions.position
+    FROM employees
+    INNER JOIN positions ON employees.position_id = positions.id
+    WHERE employees.name LIKE ? OR employees.email LIKE ?
+  `;
+
+  const values = [`%${searchTerm}%`, `%${searchTerm}%`];
+
+  db.query(q, values, (err, data) => {
+    if (err) return res.json(err);
+    return res.status(200).json(data);
+  });
+};
+
 export const addUser = (req, res) => {
   const q =
     "INSERT INTO employees(`name`, `email`, `position_id`, `dtNasc`, `salario` ) VALUES(?, ?, ?, ?, CONCAT('R$ ', ?))";
